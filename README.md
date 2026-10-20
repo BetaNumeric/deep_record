@@ -37,6 +37,8 @@ Most panels fit their vertical ranges to the visible data and uncertainty bands.
 
 Dashed vertical markers identify source changes, where lines and bands are separated. Lines connect available samples within a source; they do not add observations between those samples. Shading shows the uncertainty reported for that record. The labels distinguish different ranges, such as 68%, 95% and one or two standard deviations. A missing band does not imply an exact value.
 
+Hover or tap readouts include a brief evidence cue beside the source name, such as **thermometers**, **tree rings + more**, **trapped air** or **sediments + model**. A proxy is indirect evidence of past conditions. These cues summarize the source, whose inputs can vary over time; the info panel explains the methods.
+
 ## Datasets
 
 Coverage is approximate. The [source notes](data/SOURCES.md) list the files, exact coverage, reference conversions and limitations.

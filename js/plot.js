@@ -417,6 +417,7 @@ class Data {
     const sourceLabel = sourceLabelForDataPoint(this.seriesRows?.[index]);
     const sample = this.seriesRows?.[index];
     const sourceInfo = SOURCE_INFO[sample?.source];
+    const sourceText = [sourceLabel, sourceInfo?.basis].filter(Boolean).join(' · ');
     let sampleLine = '';
     let uncertaintyLine = '';
     if (sample) {
@@ -429,7 +430,7 @@ class Data {
           (this.unit ? ' ' + this.unit : '') + ' • ' + (sourceInfo?.uncertainty || sample.uncertainty || 'range');
       }
     }
-    const lines = [mouseData + (sourceLabel ? ' • ' + sourceLabel : ''), sampleLine, uncertaintyLine,
+    const lines = [mouseData + (sourceText ? ' • ' + sourceText : ''), sampleLine, uncertaintyLine,
       sample?.source?.startsWith('solar-') ? sample.note : ''].filter(Boolean)
       .flatMap(value => wrapTooltipText(value, min(320, width - 32)));
     const tooltipWidth = max(...lines.map(value => textWidth(value))) + 12;

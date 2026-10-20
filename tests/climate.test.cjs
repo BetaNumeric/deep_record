@@ -1356,7 +1356,7 @@ test('tooltips always identify single-source datasets and retired shortcuts do n
   }
 });
 
-test('compact mobile tooltips retain dates, source, uncertainty and essential solar context', () => {
+test('compact mobile tooltips retain evidence, dates, source, uncertainty and essential solar context', () => {
   const saved = {text:context.text,rect:context.rect,width:context.width,height:context.height,
     mouseX:context.mouseX,mouseY:context.mouseY,cursor:run('showCursor')};
   const labels = [], boxes = [];
@@ -1367,13 +1367,22 @@ test('compact mobile tooltips retain dates, source, uncertainty and essential so
   try {
     for (const [dataset, source, period, uncertainty] of [
       [0,'giss','',null], [0,'pages','Apr–Mar annual','95% ensemble'],
+      [0,'hansen','',null],
       [0,'osman','200-year mean','±1σ ensemble'], [0,'snyder','1,000-year grid','95% reconstruction'],
       [0,'phanda','stage estimate','90% ensemble'],
       [5,'sea-spratt-short','1,000-year grid','95% bootstrap'], [5,'sea-spratt-long','1,000-year grid','95% bootstrap'],
       [1,'co2-ice','','±1σ measurement'],
       [1,'co2-cencopip','500,000-year mean','95% credible'],
+      [1,'co2-foster','smoothed trend','68% fit range'],
+      [1,'co2-noaa','',null], [1,'co2-scripps','',null],
       [5,'sea-kopp','','±1σ posterior'], [5,'sea-lambeck','','±2σ accuracy'],
-      [6,'population-projection','',null]
+      [5,'sea-miller','',null], [5,'sea-marcilly','10-million-year grid',null],
+      [5,'sea-gauges','',null], [5,'sea-satellite','',null],
+      [2,'orbit-zeebe','',null],
+      [3,'solar-satire-m','',null], [3,'solar-satire-t','',null],
+      [3,'solar-cmip6','',null], [3,'solar-nnl','',null], [3,'solar-tsis','',null],
+      [4,'volcano-holvol','',null], [4,'volcano-evolv2k','',null], [4,'volcano-cmip6','',null],
+      [6,'population-history','',null], [6,'population-projection','',null]
     ]) {
       labels.length = 0; boxes.length = 0;
       const expected = run(`(() => {
@@ -1385,11 +1394,12 @@ test('compact mobile tooltips retain dates, source, uncertainty and essential so
         series.drawDataTooltip(300,-1,series.dataX.length);
         return {value:series.formatTooltipValue(series.dataY[index]), date:sampleTimeLabel(sample),
           source:SOURCE_INFO[sample.source].short,
+          basis:SOURCE_INFO[sample.source].basis,
           lower:Number.isFinite(sample.lower)?series.formatTooltipValue(sample.lower):null,
           upper:Number.isFinite(sample.upper)?series.formatTooltipValue(sample.upper):null};
       })()`);
       const rendered = labels.join(' ');
-      for (const value of [expected.value,expected.date,expected.source,period,uncertainty,expected.lower,expected.upper].filter(Boolean)) {
+      for (const value of [expected.value,expected.date,expected.source,expected.basis,period,uncertainty,expected.lower,expected.upper].filter(Boolean)) {
         assert.ok(rendered.includes(value), `${source} retains ${value}`);
       }
       assert.ok(labels.length <= 5, `${source} readout stays compact`);

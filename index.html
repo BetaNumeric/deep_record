@@ -59,6 +59,10 @@
         <p>Most panels fit their visible values and shaded bands. Orbit keeps a
           fixed vertical range. Check the units: similar shapes can represent
           very different amounts of change.</p>
+        <p>Hover labels briefly name the evidence or method. A proxy is an
+          indirect clue to past conditions. Tags summarize each source; its
+          mix of evidence can vary over time. “+ model” indicates an additional
+          modelling step, not a direct measurement of the plotted quantity.</p>
         <p>Dashed vertical markers identify source joins; lines and bands stop
           there. A jump can reflect different reconstruction methods. Lines
           connect available samples within a source without adding measurements.</p>
@@ -94,6 +98,11 @@
           <li>1–1879 CE: PAGES2k's annual reconstruction.</li>
           <li>1880 CE onward: GISS monthly observations.</li>
         </ul>
+        <p>GISS combines thermometer readings on land and at sea. PAGES2k uses
+          tree rings and other records, including corals, ice cores and sediments.
+          Older estimates use chemistry preserved in seafloor sediments:
+          Hansen and Snyder convert those signals to global temperature;
+          Osman and PhanDA combine proxies with climate simulations.</p>
         <p>GISS uses its 1961–1990 mean. Hansen uses its published 14 °C
           reference; PhanDA adopts the same value as an application assumption.
           Osman is aligned to PAGES2k over 150–1750 CE;
@@ -109,7 +118,8 @@
       <details>
         <summary>Atmospheric CO₂</summary>
         <p>CO₂ is measured in parts per million (ppm). Daily Scripps and NOAA
-          station observations follow the Antarctic ice-core composite.
+          air measurements follow the Antarctic composite, measured from
+          air trapped in ice cores.
           Ice-core shading shows ±1σ concentration measurement uncertainty;
           gas-age uncertainty is excluded.</p>
         <p>For about 66 million years to the ice-core record,
@@ -121,6 +131,9 @@
           reaches about 420 million years BP with a smoothed, most likely estimate
           and a <strong>68% confidence range</strong>. Its 500,000-year grid is
           finer than the changes the reconstruction can resolve.</p>
+        <p>CenCO₂PIP's “mixed proxies” includes marine and land evidence.
+          The older Foster segment draws on fossil plants and ancient soils.
+          Both combine indirect methods whose mix changes through time.</p>
         <p>Foster and CenCO₂PIP disagree strongly near their join. Their published
           ppm values are preserved; the separated ends do not measure a sudden
           atmospheric change. Compare broad trends, allowing for different
@@ -132,6 +145,8 @@
           are 1,600 years apart and end at 2000 CE, the calculation's reference
           date. Zoom out if the panel is empty. Only the most recent 58 million
           years are shown; the provider warns that older orbital phase is unconstrained.</p>
+        <p>This is a calculation of planetary motion under gravity, rather
+          than a climate measurement or sediment reconstruction.</p>
       </details>
       <details>
         <summary>Solar irradiance</summary>
@@ -139,6 +154,10 @@
           measured in W/m² at a fixed distance of 1 AU. The curve combines
           SATIRE / CMIP6 reconstructions, the NNL model from 1874, and TSIS
           satellite observations from 2018.</p>
+        <p>The early SATIRE segment uses tree-ring radiocarbon to infer solar
+          activity; later reconstructions use sunspots and other activity
+          records. These feed solar models. TSIS measures sunlight directly
+          with a sensor on the International Space Station.</p>
         <p>Historical records receive constant shifts based on shared dates,
           using the median of monthly differences to reduce the influence of exceptional months.
           TSIS keeps its measured level. Models can differ in trends and cycle amplitudes.</p>
@@ -154,6 +173,10 @@
           optical depth from 9500 BCE to 2014 CE. Optical depth describes how
           strongly aerosols block light; it does not count eruptions.
           Component changes are marked.</p>
+        <p>HolVol and eVolv2k infer volcanic sulfur from deposits in Greenland
+          and Antarctic ice cores, then model its aerosol effect. CMIP6 combines
+          historical reconstructions, modelling and instrumental observations,
+          including satellites.</p>
       </details>
       <details>
         <summary>Sea level</summary>
@@ -181,6 +204,11 @@
           <a href="data/sealevel/marcilly2024-correction.pdf#page=2">corrected Table 1</a>.
           It has no supplied uncertainty band. Plate tectonics and ocean-basin
           changes also matter over these long periods.</p>
+        <p>Miller and Spratt infer sea level from marine sediment records and
+          models. Lambeck uses coastal evidence, including corals, corrected
+          for land movement; Kopp combines coastal proxy records and tide gauges.
+          Modern gauges measure water level at coasts, and satellite radar
+          measures sea-surface height from orbit.</p>
       </details>
       <details>
         <summary>World population</summary>
@@ -189,6 +217,9 @@
           that have passed, and appear as dashed lines. Only years through the
           current calendar year are displayed. Lines connect annual samples
           and stop at the newest one.</p>
+        <p>Historical estimates combine records and models, with archaeology
+          informing early periods and censuses informing recent ones.
+          Projections use demographic models of future population change.</p>
       </details>
       <details>
         <summary>Controls and observations</summary>

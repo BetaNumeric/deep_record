@@ -14,6 +14,34 @@ This catalog documents the files, coverage, reference conversions and uncertaint
 
 Current GISS, NOAA, TSIS and Colorado observations are eligible for updates on the 1st and 16th of each month. `update-sources.json` defines the providers and units; `update-metadata.json` records retrieval dates, coverage, counts and checksums. The updater validates complete snapshots before saving. Reference offsets are recomputed from the loaded observations. See [Development and maintenance](../docs/DEVELOPMENT.md) for commands and workflow setup.
 
+### Evidence cues in the readout
+
+The short tags beside source names describe evidence or inference methods at the **source level**, not the exact input or sampling site behind every plotted point. Reconstructions can combine several archives and models, with changing inputs over time. “+ model” covers statistical or physical inference and global conversions; it does not imply that every tagged source runs the same type of climate simulation.
+
+| Displayed source | Basis of the plotted record |
+| --- | --- |
+| GISS | Thermometer measurements on land and at sea, processed into a global mean |
+| PAGES2k | Tree rings and other temperature-sensitive archives; the mix is not constant through time |
+| Hansen, Snyder | Marine sediment proxies converted to global surface temperature |
+| Osman, PhanDA | Marine temperature proxies combined with climate-model simulations |
+| NOAA, Scripps CO₂ | Instrumental monitoring of air at the named stations |
+| Antarctic CO₂ composite | CO₂ measured in air trapped in ice cores |
+| CenCO₂PIP | Multiple marine and terrestrial CO₂ proxies combined statistically |
+| Foster, retained pre-66 Ma segment | Fossil-plant and ancient-soil proxies; the marine boron and alkenone records in the original compilation are confined to the Cenozoic |
+| Marcilly | Paleogeographic flooding maps and a modern land-height relationship |
+| Miller, Spratt | Marine sediment records with proxy-to-sea-level modelling; Spratt is calibrated using coral constraints |
+| Lambeck, Kopp | Coastal sea-level evidence and modelling; Kopp also incorporates tide gauges |
+| Jevrejeva, Colorado | Coastal tide gauges and satellite radar altimetry, respectively |
+| SATIRE-M, retained ¹⁴C branch | Tree-ring radiocarbon used to infer solar activity and then irradiance |
+| SATIRE-T, CMIP6 solar, NNL | Sunspots or other solar-activity records used in solar-irradiance models |
+| TSIS | Irradiance measured by a sensor on the International Space Station |
+| HolVol, eVolv2k | Ice-core sulfur deposition, inferred volcanic injections and aerosol modelling |
+| CMIP6 volcanic | A composite of reconstructions, models and instrumental observations; individual input transitions cannot be identified from the runtime CSV |
+| ZB18a | Numerical integration of planetary motion under gravity |
+| Population | Historical evidence and estimates, followed by demographic projections |
+
+Method references include the [PAGES2k proxy database](https://doi.org/10.1038/sdata.2017.88) and [2019 reconstruction](https://doi.org/10.1038/s41561-019-0400-0), [Osman](https://doi.org/10.1038/s41586-021-03984-4), [Foster](https://doi.org/10.1038/ncomms14845), [Kopp](https://doi.org/10.1073/pnas.1517056113), [SATIRE documentation](https://www2.mps.mpg.de/projects/sun-climate/data_body.html), [NNL model description](https://lasp.colorado.edu/media/meetings/2025/scs/Session_Presentations/Session_1_Solar_Variablity_Earth_Climate_Influences/S1.6_Coddington_Advances_Solar_Modeling.pdf), and [HolVol](https://doi.org/10.5194/essd-14-3167-2022). The sections below document the exact selected products, conversions and limitations.
+
 ## Orbital
 
 - `data/orbit/zeebe2019orbital.txt`
