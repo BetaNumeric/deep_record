@@ -984,6 +984,140 @@ test('keyboard zoom stays positive and draw returns', () => {
   assert.ok(run('scrollValue') <= 15000000000);
 });
 
+test('held zoom keys repeat using the current event without duplicating the first step', () => {
+  const saved = run('({scrollValue,key,keyCode,showCursor})');
+  try {
+    for (const [pressedKey,direction] of [['+',-1],['d',-1],['D',-1],['ArrowRight',-1],
+      ['-',1],['a',1],['A',1],['ArrowLeft',1]]) {
+      run('setZoom(1000)');
+      const input = { key:pressedKey, repeat:false, preventDefault() { this.prevented = true; } };
+      context.zoomRepeatInput = input;
+      run('repeatKeyboardZoom(zoomRepeatInput)');
+      assert.equal(run('scrollValue'),1000);
+      run('keyPressed(zoomRepeatInput)');
+      let expected = 1000 + direction*21;
+      assert.equal(run('scrollValue'),expected);
+      assert.equal(input.prevented,true);
+      input.repeat = true;
+      // p5 retains its previous key when it receives a repeated keydown.
+      run("key = 'unrelated'");
+      for (let step=0;step<10;step++) {
+        run('repeatKeyboardZoom(zoomRepeatInput)');
+        expected += direction*(1+expected/50);
+      }
+      assert.ok(Math.abs(run('scrollValue')-expected)<1e-9);
+    }
+    const zoom = run('scrollValue'), cursor = run('showCursor');
+    for (const key of ['c','C',' ','0','9','Tab']) {
+      context.zoomRepeatInput = {key,repeat:true};
+      run('repeatKeyboardZoom(zoomRepeatInput)');
+    }
+    assert.equal(run('scrollValue'),zoom);
+    assert.equal(run('showCursor'),cursor);
+  } finally {
+    Object.assign(context,saved);
+    run(`setZoom(${saved.scrollValue})`);
+    delete context.zoomRepeatInput;
+  }
+});
+
+test('keyboard zoom respects modifier shortcuts, handled events and the info dialog', () => {
+  const zoom = run('scrollValue');
+  try {
+    for (const guard of ['ctrlKey','metaKey','altKey','defaultPrevented']) {
+      context.zoomRepeatInput = {key:'+',repeat:true,[guard]:true,
+        preventDefault() { throw new Error('Browser shortcut was prevented'); }};
+      run('keyPressed(zoomRepeatInput); repeatKeyboardZoom(zoomRepeatInput)');
+      assert.equal(run('scrollValue'),zoom);
+    }
+    context.document = {getElementById:()=>({open:true})};
+    context.zoomRepeatInput = {key:'-',repeat:true,
+      preventDefault() { throw new Error('Dialog input was prevented'); }};
+    run('keyPressed(zoomRepeatInput); repeatKeyboardZoom(zoomRepeatInput)');
+    assert.equal(run('scrollValue'),zoom);
+  } finally {
+    delete context.document;
+    delete context.zoomRepeatInput;
+  }
+});
+
+test('holding a horizontal mouse drag at either edge zooms after a pause at a consistent rate', () => {
+  const saved = {mouseX:context.mouseX, mouseY:context.mouseY, pmouseX:context.pmouseX,
+    pmouseY:context.pmouseY, mouseIsPressed:context.mouseIsPressed, mouseButton:context.mouseButton};
+  const savedZoom = run('scrollValue'), savedTouchMode = run('chartTouchMode');
+  try {
+    for (const edge of [-1,1]) {
+      for (const frameMs of [1000/30,1000/60,1000/120]) {
+        run('chartTouchMode=false');
+        Object.assign(context,{mouseButton:context.LEFT,mouseIsPressed:true,mouseX:640,mouseY:400,pmouseX:640,pmouseY:400});
+        run('mousePressed()');
+        context.mouseX = edge < 0 ? 0 : context.width;
+        run('mouseDragged(); setZoom(1000)');
+        run('for (let i=0;i<3;i++) advanceMouseEdgeZoom(100)');
+        assert.equal(run('scrollValue'),1000);
+        for (let frame=0;frame<Math.round(1000/frameMs);frame++) run(`advanceMouseEdgeZoom(${frameMs})`);
+        assert.ok(Math.abs(run('scrollValue')-(edge<0 ? 500 : 2000))<1e-7);
+        run('mouseReleased()');
+        const stopped = run('scrollValue');
+        run('advanceMouseEdgeZoom(100)');
+        assert.equal(run('scrollValue'),stopped);
+      }
+    }
+  } finally {
+    run(`mouseReleased(); chartTouchMode=${savedTouchMode}; setZoom(${savedZoom})`);
+    Object.assign(context,saved);
+  }
+});
+
+test('edge zoom needs horizontal intent and stops on retreat, reversal, cancellation or dialog input', () => {
+  const saved = {mouseX:context.mouseX, mouseY:context.mouseY, pmouseX:context.pmouseX,
+    pmouseY:context.pmouseY, mouseIsPressed:context.mouseIsPressed, mouseButton:context.mouseButton};
+  const savedZoom = run('scrollValue'), savedTouchMode = run('chartTouchMode');
+  const tick = () => run('for(let i=0;i<20;i++) advanceMouseEdgeZoom(100)');
+  const arm = () => {
+    run('chartTouchMode=false');
+    Object.assign(context,{mouseButton:context.LEFT,mouseIsPressed:true,mouseX:640,mouseY:400,pmouseX:640,pmouseY:400});
+    run('mousePressed()');
+    context.mouseX=0;
+    run('mouseDragged(); setZoom(1000)');
+  };
+  try {
+    Object.assign(context,{mouseButton:context.LEFT,mouseIsPressed:true,mouseX:0,mouseY:300,pmouseX:0,pmouseY:300});
+    run('chartTouchMode=false; mousePressed(); setZoom(1000)');
+    tick();
+    assert.equal(run('scrollValue'),1000,'Clicking at an edge must not start zooming');
+    context.mouseY=500;
+    run('mouseDragged(); setZoom(1000)');
+    tick();
+    assert.equal(run('scrollValue'),1000,'Vertical overlap drags must not start edge zoom');
+    for (const stop of ['retreat','reverse','release','cancel','touch','dialog','header']) {
+      arm();
+      tick();
+      assert.ok(run('scrollValue')<1000);
+      if (stop==='retreat' || stop==='reverse') {
+        context.pmouseX=0;
+        context.mouseX=stop==='retreat' ? 640 : 2;
+        run('mouseDragged()');
+      } else if (stop==='release') context.mouseIsPressed=false;
+      else if (stop==='cancel') run('mouseReleased()');
+      else if (stop==='touch') run('chartTouchMode=true');
+      else if (stop==='dialog') context.document={getElementById:()=>({open:true})};
+      else context.mouseY=10;
+      const stopped=run('scrollValue');
+      tick();
+      assert.equal(run('scrollValue'),stopped,stop);
+      delete context.document;
+    }
+    arm();
+    run('advanceMouseEdgeZoom(30000)');
+    assert.equal(run('scrollValue'),1000,'A stalled frame must not skip the dwell time');
+  } finally {
+    delete context.document;
+    run(`mouseReleased(); chartTouchMode=${savedTouchMode}; setZoom(${savedZoom})`);
+    Object.assign(context,saved);
+  }
+});
+
 test('pixel thinning retains the visible volcanic maximum', () => {
   const result = run(`(() => {
     setZoom(10000);

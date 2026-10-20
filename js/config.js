@@ -9,6 +9,9 @@ const SHIFT_OFFSET = 15;              // Left margin offset
 // Constants for zoom and scrolling
 const DEFAULT_SCROLL_VALUE = 25;      // Starting zoom level
 const MAX_SCROLL_VALUE = 15000000000; // Max zoom out (cosmological scale)
+const MOUSE_EDGE_ZOOM_MARGIN = 32;
+const MOUSE_EDGE_ZOOM_DELAY_MS = 300;
+const MOUSE_EDGE_ZOOM_DOUBLING_MS = 1000;
 
 // Constants for color and transparency
 const BACKGROUND_ALPHA = 128;         // Standard background transparency

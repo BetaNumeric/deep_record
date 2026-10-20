@@ -140,6 +140,7 @@ function initializeView() {
 
 function draw() {
   if (startupError || !data.length) return;
+  advanceMouseEdgeZoom(typeof deltaTime === 'number' ? deltaTime : 0);
   if (mouseIsPressed) {
     cursor(MOVE);
   } else {

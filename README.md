@@ -27,6 +27,10 @@ Timeline labels provide familiar landmarks as you zoom. Hover or focus one for a
 | Tab, then Enter or Space | Focus and select a dataset button |
 | Left/Right, Home/End on a focused button | Select an adjacent, first or last dataset |
 
+Hold a zoom key to keep zooming; release it to stop.
+
+While dragging with the mouse, hold at the left or right edge to keep zooming after a short pause. The left edge zooms in and the right edge zooms out. Move away from the edge or release to stop.
+
 Most panels fit their vertical ranges to the visible data and uncertainty bands. Orbital eccentricity uses a fixed vertical range. Read the units in the hover box: similar shapes in different panels can represent very different amounts of change.
 
 **BP** means years before 1950; **CE/BCE** are calendar years. Year markers fall on January 1. Close views show calendar dates, while each sample retains its own date or averaging period. Zooming in does not create finer data.
