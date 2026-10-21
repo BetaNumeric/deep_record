@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 
-function worker(scope = 'https://betanumeric.github.io/record/') {
+function worker(scope = 'https://betanumeric.github.io/deep_record/') {
   const handlers = new Map(), savedCaches = new Map();
   const state = { online: true, status: 200, body: 'current', requests: [], skipped: false, claimed: false };
   const fetch = async request => {
@@ -67,7 +67,7 @@ test('installable metadata and offline assets work at root and GitHub Pages subp
   const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
   assert.equal(manifest.display, 'standalone');
   assert.ok(manifest.name);
-  for (const scope of ['https://example.org/', 'https://betanumeric.github.io/record/']) {
+  for (const scope of ['https://example.org/', 'https://betanumeric.github.io/deep_record/']) {
     const app = worker(scope);
     for (const key of ['id', 'scope', 'start_url']) assert.equal(new URL(manifest[key], scope).href, scope);
     const assets = new Set(app.read('APP_ASSETS').map(path => new URL(path, scope).href));
@@ -134,18 +134,20 @@ test('activation removes only obsolete caches for this app and scope', async () 
   const app = worker();
   const old = app.read('CACHE_PREFIX') + 'old';
   const legacy = 'perspective-' + encodeURIComponent(app.scope) + '-v1';
+  const formerName = 'the-record-' + encodeURIComponent(app.scope) + '-v1';
   const legacyOtherScope = 'perspective-' + encodeURIComponent('https://betanumeric.github.io/perspective/') + '-v1';
   const peer = 'climate-spiral-v60';
   const otherScope = worker('https://betanumeric.github.io/preview/').read('CACHE_NAME');
   await app.caches.open(old);
   await app.caches.open(legacy);
+  await app.caches.open(formerName);
   await app.caches.open(legacyOtherScope);
   await app.caches.open(peer);
   await app.caches.open(otherScope);
   await app.dispatch('install');
   await app.dispatch('activate');
   const keys = await app.caches.keys();
-  assert.ok(!keys.includes(old) && !keys.includes(legacy));
+  assert.ok(!keys.includes(old) && !keys.includes(legacy) && !keys.includes(formerName));
   assert.ok(keys.includes(legacyOtherScope));
   assert.ok(keys.includes(peer) && keys.includes(otherScope) && keys.includes(app.read('CACHE_NAME')));
   assert.ok(app.state.claimed);

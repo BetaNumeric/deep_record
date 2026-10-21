@@ -123,6 +123,6 @@ Colorado release selection is explicit. Review provider release corrections and 
 
 Set **Settings → Pages → Build and deployment → Source → GitHub Actions**. The updater uses the built-in `GITHUB_TOKEN` with `contents: write` to commit validated data; no additional secret is required.
 
-[Deploy The Record](../.github/workflows/deploy-pages.yml) publishes app changes on `main`. After a data commit, the updater calls that workflow with the validated commit, because bot commits do not trigger a separate Pages build. For a manual deployment, select **Actions → Deploy The Record → Run workflow**. If the default branch is renamed, update the deployment workflow's push branch.
+[Deploy Deep Record](../.github/workflows/deploy-pages.yml) publishes app changes on `main`. After a data commit, the updater calls that workflow with the validated commit, because bot commits do not trigger a separate Pages build. For a manual deployment, select **Actions → Deploy Deep Record → Run workflow**. If the default branch is renamed, update the deployment workflow's push branch.
 
 Scheduled execution depends on GitHub Actions availability; the manual workflows provide an alternative. The static deployment contains the page, scripts, styles, datasets, manifest, service worker, icons and vendored library. Development tools and the archived `java/` prototype are excluded.

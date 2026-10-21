@@ -151,7 +151,7 @@ def validate_replacement(old, new, today):
 def fetch_text(url):
     if not url.startswith("https://"):
         raise UpdateError("Provider URL must use HTTPS")
-    request = Request(url, headers={"User-Agent": "TheRecord-observation-updater/1.0",
+    request = Request(url, headers={"User-Agent": "DeepRecord-observation-updater/1.0",
                                    "Accept": "text/plain", "Accept-Encoding": "identity"})
     for attempt in range(3):
         try:

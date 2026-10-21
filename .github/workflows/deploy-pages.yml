@@ -1,4 +1,4 @@
-name: Deploy The Record
+name: Deploy Deep Record
 
 on:
   push:
@@ -30,7 +30,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: the-record-pages
+  group: deep-record-pages
   cancel-in-progress: false
 
 jobs:

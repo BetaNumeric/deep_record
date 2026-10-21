@@ -1,6 +1,7 @@
 // Include the scope so other apps on the same GitHub Pages origin keep their caches.
-const CACHE_PREFIX = `the-record-${encodeURIComponent(self.registration.scope)}-`;
-const LEGACY_CACHE_PREFIX = `perspective-${encodeURIComponent(self.registration.scope)}-`;
+const CACHE_PREFIX = `deep-record-${encodeURIComponent(self.registration.scope)}-`;
+const LEGACY_CACHE_PREFIXES = ['perspective', 'the-record'].map(name =>
+  `${name}-${encodeURIComponent(self.registration.scope)}-`);
 const CACHE_NAME = `${CACHE_PREFIX}v1`;
 const APP_ASSETS = [
   './index.html',
@@ -73,7 +74,7 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.filter(key => key !== CACHE_NAME
-      && (key.startsWith(CACHE_PREFIX) || key.startsWith(LEGACY_CACHE_PREFIX)))
+      && (key.startsWith(CACHE_PREFIX) || LEGACY_CACHE_PREFIXES.some(prefix => key.startsWith(prefix))))
       .map(key => caches.delete(key)));
     await self.clients.claim();
   })());

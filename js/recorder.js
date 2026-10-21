@@ -213,7 +213,7 @@ async function startZoomRecording(preview = false) {
       zoomRecorder.downloadUrl = URL.createObjectURL(result.blob);
       const link = recorderField('download');
       link.href = zoomRecorder.downloadUrl;
-      link.download = 'the-record-' + new Date().toISOString().slice(0, 19).replaceAll(':', '-') + '.' + result.extension;
+      link.download = 'deep-record-' + new Date().toISOString().slice(0, 19).replaceAll(':', '-') + '.' + result.extension;
       link.textContent = 'Save ' + (result.extension === 'zip' ? 'PNG frames (.zip)' : 'video (.' + result.extension + ')');
       link.hidden = false;
     }
