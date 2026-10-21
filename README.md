@@ -1,8 +1,8 @@
-# The Record - perspective across deep time
+# Deep Record - perspective across time
 
-[Open the app](https://betanumeric.github.io/record/)
+[Open the app](https://betanumeric.github.io/deep_record/)
 
-The Record is an interactive view of climate history, from recent observations to hundreds of millions of years ago. Compare CO₂, sea level, solar irradiance, orbital eccentricity, volcanic aerosols or population with a combined global temperature curve.
+Deep Record is an interactive view of climate history, from recent observations to hundreds of millions of years ago. Compare CO₂, sea level, solar irradiance, orbital eccentricity, volcanic aerosols or population with a combined global temperature curve.
 
 Both panels share a **linear time axis**: equal distances represent equal amounts of time at every zoom level. The app is intended for exploring broad patterns and asking questions about the data.
 
@@ -94,7 +94,7 @@ Visual correlation does not establish causation. Some reconstructions share mode
 
 ## Installing and offline use
 
-Open [The Record](https://betanumeric.github.io/record/) in your browser. On iPhone, choose **Share → Add to Home Screen**, enable **Open as Web App** if offered, then tap **Add**. On Android or desktop, use the browser's **Install app** command. The installed app opens in its own window and supports both portrait and landscape.
+Open [Deep Record](https://betanumeric.github.io/deep_record/) in your browser. On iPhone, choose **Share → Add to Home Screen**, enable **Open as Web App** if offered, then tap **Add**. On Android or desktop, use the browser's **Install app** command. The installed app opens in its own window and supports both portrait and landscape.
 
 The first online visit saves the app and its chart datasets for offline use. Open the installed app online once and allow caching to finish before going offline. Offline charts use the saved observations; reconnect and reload to fetch current deployed files. External source links need an internet connection. Browsers may remove cached files when storage is cleared or space is needed.
 
