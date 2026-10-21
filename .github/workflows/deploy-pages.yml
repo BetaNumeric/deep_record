@@ -1,4 +1,4 @@
-name: Deploy Perspective
+name: Deploy The Record
 
 on:
   push:
@@ -30,7 +30,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: perspective-pages
+  group: the-record-pages
   cancel-in-progress: false
 
 jobs:

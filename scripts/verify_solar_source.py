@@ -54,7 +54,7 @@ def checked_source(manifest, cache_dir, offline=False, opener=urlopen):
         raise ValueError("Solar source URL must use HTTPS")
     cache_dir.mkdir(parents=True, exist_ok=True)
     temporary = cache_dir / ("." + filename + "." + uuid.uuid4().hex + ".part")
-    request = Request(url, headers={"User-Agent": "Perspective-solar-verifier/1.0", "Accept-Encoding": "identity"})
+    request = Request(url, headers={"User-Agent": "TheRecord-solar-verifier/1.0", "Accept-Encoding": "identity"})
     print(f"Downloading reviewed solar source ({expected_bytes / 1024**2:.1f} MiB)...", flush=True)
     try:
         checksum = hashlib.sha256()
