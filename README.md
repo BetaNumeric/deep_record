@@ -49,9 +49,9 @@ Coverage is approximate. The [source notes](data/SOURCES.md) list the files, exa
 | Atmospheric CO₂ | Foster, CenCO₂PIP, Antarctic ice cores, Scripps and NOAA; about 420 million years ago to daily station observations |
 | Sea level | Corrected Marcilly, Miller, Spratt & Lisiecki, Lambeck, Kopp, Jevrejeva and Colorado satellites; 520 million years ago to recent observations |
 | Solar irradiance | SATIRE / CMIP6, NNL and TSIS; about 8,700 years BP to recent observations, at a fixed Sun–Earth distance of 1 AU |
-| Orbital eccentricity | Zeebe ZB18a; the most recent 58 million years of the published orbital solution, ending at 2000 CE |
+| Orbital eccentricity | Zeebe ZB18a for the most recent 58 million years through 2000 CE; La2004 continues to the present |
 | Volcanic aerosols | HolVol / eVolv2k / CMIP6; annual global aerosol optical depth from 9500 BCE to 2014 CE |
-| World population | Our World in Data; historical estimates through 2023 and dashed projections from 2024, displayed through the current calendar year |
+| World population | Our World in Data; historical estimates through 2023 and dashed projections from 2024, interpolated to the present |
 
 ### Temperature reference
 

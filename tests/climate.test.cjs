@@ -810,23 +810,83 @@ test('drawing fewer points preserves continuous solar segments and actual long g
 });
 
 test('orbital samples keep their published ages and exclude the unconstrained interval', () => {
-  assert.equal(run('data[2].maxX'), 50);
+  assert.equal(run('data[2].maxX'), run('currentYear-1950'));
   assert.equal(run('data[2].minX'), 50-58000000);
-  assert.equal(run('data[2].dataX[1]'), 50-1600);
+  assert.equal(run("data[2].seriesRows.find(row=>row.source==='orbit-zeebe').time"), 50);
+  assert.equal(run("data[2].seriesRows.filter(row=>row.source==='orbit-zeebe')[1].time"), 50-1600);
   run('setZoom(10); oneYear = -1000 / scrollValue');
-  assert.equal(run('data[2].visiblePointCount()'), 0);
+  assert.equal(run('data[2].visiblePointCount()'), 1);
   run('data[2].draw()');
   run('setZoom(25); oneYear = -1000 / scrollValue');
-  assert.equal(run('data[2].visiblePointCount()'), 1);
+  assert.equal(run('data[2].visiblePointCount()'), 3);
+});
+
+test('recent orbit uses the published La2004 model without changing or connecting across the 2000 join', () => {
+  const result=run(`(() => {
+    const recent=parseRecentOrbitalRows(sourceTables.recentOrbitalRaw);
+    const series=data[2], join=series.seriesRows.findIndex(row=>row.source==='orbit-zeebe');
+    const zeebeValues=new Map(series.seriesRows.filter(row=>row.source==='orbit-zeebe').map(row=>[row.time,row.eccentricity]));
+    return {recent, first:series.seriesRows[0], next:series.seriesRows[1],
+      oldestRecent:series.seriesRows[join-1], newestZeebe:series.seriesRows[join],
+      connected:series.canConnectIndices(join-1,join), newerConnected:series.canConnectIndices(0,1),
+      originalPreserved:parseZeebeOrbitalRows(sourceTables.zeebeOrbitalRaw).every(row=>
+        zeebeValues.get(row.time)===row.eccentricity)};
+  })()`);
+  assert.equal(result.recent[0].time,50); assert.equal(result.recent[1].time,1050);
+  assert.equal(result.recent[0].eccentricity,0.01670236225492288);
+  assert.equal(result.recent[1].eccentricity,0.01627519714977170);
+  assert.equal(result.first.time,run('currentYear-1950'));
+  assert.equal(result.first.interpolated,true);
+  const fraction=(run('currentYear')-2000)/1000;
+  assert.ok(Math.abs(result.first.eccentricity-(result.recent[0].eccentricity+fraction*(result.recent[1].eccentricity-result.recent[0].eccentricity)))<1e-15);
+  assert.equal(result.oldestRecent.time,50); assert.equal(result.newestZeebe.time,50);
+  assert.equal(result.connected,false); assert.equal(result.newerConnected,true);
+  assert.equal(result.originalPreserved,true);
+  for (const invalid of [[],['wrong','2000,0.0167','3000,0.0162'],
+    ['year_ce,eccentricity','2000,0.0167','3000,NaN'],['year_ce,eccentricity','2000,0.0167','2100,0.0162']]) {
+    assert.throws(()=>run(`parseRecentOrbitalRows(${JSON.stringify(invalid)})`),/Invalid La2004/);
+  }
 });
 
 test('population labels projections from 2024 and retains historical estimates unchanged', () => {
-  const result = run(`({ projections:data[6].seriesRows.filter(row=>row.mode==='projection').map(row=>row.time+1950),
-    latestHistorical:Math.max(...data[6].seriesRows.filter(row=>row.source==='population-history').map(row=>row.time+1950)) })`);
+  const result = run(`({ projections:data[6].seriesRows.filter(row=>row.mode==='projection'&&!row.interpolated).map(row=>row.time+1950),
+    latestHistorical:Math.max(...data[6].seriesRows.filter(row=>row.source==='population-history').map(row=>row.time+1950)),
+    latest:data[6].seriesRows[0],
+    preserved:parseWorldPopulationRows(sourceTables.populationLongRunRaw,Math.floor(currentYear)).every(row=>
+      data[6].seriesRows.some(sample=>sample.time===row.time && sample.population===row.population && sample.source===row.source)) })`);
   const currentCalendarYear = testDate.getUTCFullYear();
   assert.deepEqual([...result.projections],
     Array.from({length: currentCalendarYear - 2023}, (_, index) => currentCalendarYear - index));
   assert.equal(result.latestHistorical, 2023);
+  assert.equal(result.latest.time,run('currentYear-1950'));
+  assert.equal(result.latest.mode,'projection');
+  assert.equal(result.latest.interpolated,true);
+  assert.equal(result.preserved,true);
+});
+
+test('model endpoints interpolate within published coverage without crossing joins, gaps or inventing extrapolations', () => {
+  const result=run(`(() => {
+    const rows=[{time:76,population:8,source:'population-projection',mode:'projection',maxGapYears:1},
+      {time:77,population:12,source:'population-projection',mode:'projection',maxGapYears:1}];
+    const clip=values=>modelRowsThroughPresent(values,'population',2026.75);
+    return {clipped:clip(rows), original:rows,
+      outside:modelRowsThroughPresent(rows,'population',2028),
+      before:modelRowsThroughPresent(rows,'population',2025),
+      exact:modelRowsThroughPresent(rows,'population',2026),
+      different:clip([rows[0],{...rows[1],source:'different'}]),
+      points:clip([rows[0],{...rows[1],mode:'points'}]),
+      gap:clip([rows[0],{...rows[1],maxGapYears:0.5}])};
+  })()`);
+  assert.equal(result.clipped[0].time,76.75); assert.equal(result.clipped[0].population,11);
+  assert.equal(result.clipped[0].sampleDate,'2026-10-01');
+  assert.equal(result.clipped[0].mode,'projection'); assert.equal(result.clipped[0].interpolated,true);
+  assert.deepEqual([...result.original].map(row=>row.time),[76,77]);
+  assert.equal(result.outside[0].time,77); assert.equal(result.outside.length,2);
+  assert.equal(result.before.length,0);
+  assert.equal(result.exact.length,1); assert.equal(result.exact[0].interpolated,undefined);
+  for (const rows of [result.different,result.points,result.gap]) {
+    assert.equal(rows.length,1); assert.equal(rows[0].interpolated,undefined);
+  }
 });
 
 test('volcanic values retain the published annual product and correct component dates', () => {
@@ -1301,12 +1361,51 @@ test('population lines reach the left edge without being clipped below the panel
     context.width = 375;
     lines.length = 0;
     run('setZoom(1); oneYear = -1000/scrollValue; data[6].draw()');
-    assert.equal(run('data[6].visiblePointCount()'), 0);
-    assert.equal(lines.length, 0, 'annual values are not extended beyond their newest timestamp');
+    assert.equal(run('data[6].visiblePointCount()'), 1);
+    assert.ok(lines.some(line=>line.x1===375 || line.x2===375), 'projections reach the present even between annual samples');
   } finally {
     context.width = saved.width;
     context.line = saved.line;
     Object.assign(context.drawingContext,{clip:saved.clip,restore:saved.restore});
+  }
+});
+
+test('population and orbit reach the right edge in close views and keep both visible ends within the panel', () => {
+  const saved = {line:context.line,clip:context.drawingContext.clip,restore:context.drawingContext.restore,
+    setLineDash:context.drawingContext.setLineDash,width:context.width,text:context.text,mouseX:context.mouseX,mouseY:context.mouseY};
+  const lines = [], labels=[];
+  let clipped = false, dash=[];
+  context.line = (x1,y1,x2,y2) => { if (clipped) lines.push({x1,y1,x2,y2,dash}); };
+  context.drawingContext.clip = () => { clipped=true; };
+  context.drawingContext.restore = () => { clipped=false; };
+  context.drawingContext.setLineDash = value => { dash=[...value]; };
+  context.text = label => labels.push(String(label));
+  try {
+    for (const dataset of [2,6]) for (const viewport of [375,1280]) {
+      context.width=viewport;
+      lines.length=0; labels.length=0;
+      context.mouseX=viewport-16; context.mouseY=100;
+      const bounds=run(`(() => {
+        setZoom(1); oneYear=-1000;
+        const series=data[${dataset}]; series.rectY=panelTargetY(1); series.draw();
+        return {top:series.rectY,bottom:series.rectY+series.rectH,right:series.rectX,count:series.visiblePointCount()};
+      })()`);
+      assert.equal(bounds.right,viewport);
+      assert.ok(bounds.count>=1,'the derived endpoint remains visible between published dates');
+      for (const edge of [15,viewport]) {
+        const crossing=lines.find(line=>Math.max(line.x1,line.x2)>=edge && Math.min(line.x1,line.x2)<=edge);
+        assert.ok(crossing,`dataset ${dataset} reaches edge ${edge} at width ${viewport}`);
+        const edgeY=crossing.y1+(edge-crossing.x1)/(crossing.x2-crossing.x1)*(crossing.y2-crossing.y1);
+        assert.ok(edgeY>=bounds.top-1e-8 && edgeY<=bounds.bottom+1e-8,'visible endpoint fits inside the vertical clip');
+        assert.deepEqual(crossing.dash,dataset===6 ? [5,4] : []);
+      }
+      assert.ok(labels.some(label=>/interpolated/.test(label)),'readout identifies the interpolated endpoint');
+      assert.ok(!labels.includes('No samples in view. Zoom out.'));
+    }
+  } finally {
+    context.width=saved.width; context.line=saved.line; context.text=saved.text;
+    context.mouseX=saved.mouseX; context.mouseY=saved.mouseY;
+    Object.assign(context.drawingContext,{clip:saved.clip,restore:saved.restore,setLineDash:saved.setLineDash});
   }
 });
 
@@ -1673,6 +1772,41 @@ test('rendered ticks, cursor and observations agree on calendar dates at desktop
     context.width = savedWidth;
     run('({currentYear,scrollValue,data,event,selectedData,showCursor} = savedTimelineState); oneYear = -1000/scrollValue; redrawRequested = true');
     delete context.savedTimelineState;
+  }
+});
+
+test('timeline labels enter from outside the left edge without changing their date alignment', () => {
+  const savedFunctions = { text:context.text, translate:context.translate };
+  const savedWidth = context.width;
+  context.savedEdgeTimelineState = run('({currentYear, scrollValue, event, showCursor})');
+  const labels = [];
+  let translationX = 0;
+  context.translate = x => { translationX = x; };
+  context.text = (label,x,y) => labels.push({label,x:x+translationX,y});
+  try {
+    run('currentYear = decimalYearFromYmd(2026,10,2); event = []; showCursor = false');
+    for (const [viewport, tickYear, label] of [[1280,1800,'1800'],[375,2026,'Jan 2026'],[1280,-1000000000,'-1000000000']]) {
+      context.width = viewport;
+      for (const physicalX of [-8,0,8,24]) {
+        labels.length = 0;
+        const zoom = (run('currentYear') - tickYear) * 1000 / (viewport - 15 - physicalX);
+        run(`setZoom(${zoom}); redrawRequested = true; draw()`);
+        const axisLabels = labels.filter(item => item.y === 690);
+        const enteringLabel = axisLabels.find(item => item.label === label);
+        assert.ok(enteringLabel, `${label} is drawn with its center at ${physicalX}px`);
+        assert.ok(Math.abs(enteringLabel.x-physicalX)<1e-8, 'label follows the same coordinate as its date');
+        assert.ok(axisLabels.length<=20, 'offscreen padding stays bounded');
+        for (let index=1;index<axisLabels.length;index++) {
+          const right=axisLabels[index-1],left=axisLabels[index];
+          assert.ok(left.x+context.textWidth(left.label)/2+8 <= right.x-context.textWidth(right.label)/2+1e-8);
+        }
+      }
+    }
+  } finally {
+    Object.assign(context, savedFunctions);
+    context.width = savedWidth;
+    run('({currentYear,scrollValue,event,showCursor} = savedEdgeTimelineState); oneYear = -1000/scrollValue; redrawRequested = true');
+    delete context.savedEdgeTimelineState;
   }
 });
 

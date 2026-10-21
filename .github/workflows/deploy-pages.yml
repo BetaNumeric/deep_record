@@ -63,6 +63,7 @@ jobs:
         run: |
           node tests/climate.test.cjs
           node tests/pwa.test.cjs
+          node tests/recorder.test.cjs
           python -m unittest discover -s tests -p 'test_*.py'
 
       - name: Prepare the static website

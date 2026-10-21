@@ -39,6 +39,25 @@ function buildTimeValueTable(rows, valueKey, valueColumn, fallbackTable = null) 
   return fallbackTable;
 }
 
+function modelRowsThroughPresent(rows, valueKey, endYear) {
+  const endTime = endYear - 1950;
+  const sorted = sortRowsByTimeDesc([...rows]);
+  const firstPast = sorted.findIndex(row => row.time <= endTime);
+  if (firstPast < 0) return [];
+  const result = sorted.slice(firstPast);
+  const older = result[0], newer = sorted[firstPast - 1];
+  if (newer && older.time < endTime && sourceSegment(newer) === sourceSegment(older)
+    && newer.mode !== 'points' && older.mode !== 'points'
+    && newer.time - older.time <= Math.min(newer.maxGapYears ?? Infinity, older.maxGapYears ?? Infinity)) {
+    const fraction = (endTime - older.time) / (newer.time - older.time);
+    result.unshift({ ...older, time: endTime,
+      [valueKey]: older[valueKey] + fraction * (newer[valueKey] - older[valueKey]),
+      sampleDate: new Date(millisecondsFromDecimalYear(endYear)).toISOString().slice(0, 10),
+      interpolated: true });
+  }
+  return result;
+}
+
 function matchedMonthlyOffset(sourceRows, referenceRows, valueKey, start = -Infinity, end = Infinity) {
   function monthlyMeans(rows) {
     const bins = new Map();

@@ -141,10 +141,11 @@
       </details>
       <details>
         <summary>Orbital eccentricity</summary>
-        <p>Zeebe's ZB18a solution describes the shape of Earth's orbit. Samples
-          are 1,600 years apart and end at 2000 CE, the calculation's reference
-          date. Zoom out if the panel is empty. Only the most recent 58 million
-          years are shown; the provider warns that older orbital phase is unconstrained.</p>
+        <p>Zeebe's ZB18a solution describes the shape of Earth's orbit over the
+          last 58 million years, with samples 1,600 years apart. Older orbital
+          phase is unconstrained and is omitted. From 2000 CE, La2004 extends
+          the curve to the present using a line between its 1,000-year samples.
+          The model change is marked; their values are not adjusted to match.</p>
         <p>This is a calculation of planetary motion under gravity, rather
           than a climate measurement or sediment reconstruction.</p>
       </details>
@@ -214,9 +215,9 @@
         <summary>World population</summary>
         <p>Our World in Data provides historical estimates through 2023.
           Values from 2024 are projections in this snapshot, including years
-          that have passed, and appear as dashed lines. Only years through the
-          current calendar year are displayed. Lines connect annual samples
-          and stop at the newest one.</p>
+          that have passed, and appear as dashed lines. Lines connect annual
+          samples and reach the present using the next year's projection.
+          Interpolated endpoints are identified in the hover text.</p>
         <p>Historical estimates combine records and models, with archaeology
           informing early periods and censuses informing recent ones.
           Projections use demographic models of future population change.</p>
@@ -241,6 +242,41 @@
       </footer>
     </div>
   </dialog>
+  <div id="recorder-guard" hidden></div>
+  <aside id="zoom-recorder" aria-labelledby="recorder-title" hidden>
+    <header>
+      <h2 id="recorder-title">Zoom recording</h2>
+      <button type="button" id="recorder-close" class="info-close" aria-label="Close recording panel">×</button>
+    </header>
+    <form id="recorder-form">
+      <label for="recorder-start">Start span · years visible</label>
+      <div class="recorder-range">
+        <input id="recorder-start" type="number" step="any" required />
+        <button type="button" data-recorder-view="start">Use view</button>
+      </div>
+      <label for="recorder-end">End span · years visible</label>
+      <div class="recorder-range">
+        <input id="recorder-end" type="number" step="any" required />
+        <button type="button" data-recorder-view="end">Use view</button>
+      </div>
+      <div class="recorder-options">
+        <label>Duration · seconds<input id="recorder-duration" type="number" min="1" max="120" step="0.1" value="10" required /></label>
+        <label>Frames / second<select id="recorder-fps"><option>15</option><option selected>30</option><option>60</option></select></label>
+        <label>Motion<select id="recorder-easing"><option value="smooth">Smooth</option><option value="steady">Steady</option></select></label>
+        <label>Output<select id="recorder-format"><option value="video">Video</option><option value="frames">PNG ZIP</option></select></label>
+      </div>
+      <label class="recorder-loop"><input id="recorder-loop" type="checkbox" />Return to start (loop)</label>
+      <p class="recorder-note">Duration includes the return when looping.</p>
+      <p class="recorder-note">Chart and timeline only, at the current window size. Controls and cursor are excluded. Exports render every frame; processing time can vary.</p>
+      <div class="recorder-actions">
+        <button type="button" id="recorder-preview">Preview</button>
+        <button type="submit" id="recorder-start-button">Record</button>
+        <button type="button" id="recorder-stop" disabled>Stop</button>
+      </div>
+    </form>
+    <p id="recorder-status" role="status" aria-live="polite">Shift+R opens this panel. Escape stops a recording.</p>
+    <a id="recorder-download" hidden>Save recording</a>
+  </aside>
   <script src="vendor/p5/p5.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/time.js"></script>
@@ -258,6 +294,7 @@
   <script src="js/touch.js"></script>
   <script src="js/ui.js"></script>
   <script src="sketch.js"></script>
+  <script src="js/recorder.js"></script>
   <script src="js/pwa.js"></script>
   <script>
     if (typeof p5 === 'undefined') reportStartupError(new Error('Could not load the chart library; check your connection'));

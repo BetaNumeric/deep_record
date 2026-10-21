@@ -37,7 +37,7 @@ The short tags beside source names describe evidence or inference methods at the
 | TSIS | Irradiance measured by a sensor on the International Space Station |
 | HolVol, eVolv2k | Ice-core sulfur deposition, inferred volcanic injections and aerosol modelling |
 | CMIP6 volcanic | A composite of reconstructions, models and instrumental observations; individual input transitions cannot be identified from the runtime CSV |
-| ZB18a | Numerical integration of planetary motion under gravity |
+| ZB18a, La2004 | Numerical integration of planetary motion under gravity |
 | Population | Historical evidence and estimates, followed by demographic projections |
 
 Method references include the [PAGES2k proxy database](https://doi.org/10.1038/sdata.2017.88) and [2019 reconstruction](https://doi.org/10.1038/s41561-019-0400-0), [Osman](https://doi.org/10.1038/s41586-021-03984-4), [Foster](https://doi.org/10.1038/ncomms14845), [Kopp](https://doi.org/10.1073/pnas.1517056113), [SATIRE documentation](https://www2.mps.mpg.de/projects/sun-climate/data_body.html), [NNL model description](https://lasp.colorado.edu/media/meetings/2025/scs/Session_Presentations/Session_1_Solar_Variablity_Earth_Climate_Influences/S1.6_Coddington_Advances_Solar_Modeling.pdf), and [HolVol](https://doi.org/10.5194/essd-14-3167-2022). The sections below document the exact selected products, conversions and limitations.
@@ -48,8 +48,15 @@ Method references include the [PAGES2k proxy database](https://doi.org/10.1038/s
   - File coverage: 100,000–0 kyr BP, with 1.6 kyr sample spacing
   - Source: https://www.ncei.noaa.gov/pub/data/paleo/climate_forcing/orbital_variations/zeebe2019orbital.txt
   - Epoch documentation: https://doi.org/10.1029/2025PA005287 (Kocken & Zeebe 2026, section 2.1, explicitly identifies ZB18a's epoch as J2000.0)
-  - Runtime use: eccentricity at the published relative ages, `time = 2000 - 1950 - age_kyr * 1000`. The astronomical epoch is 2000 CE, despite the NOAA file's generic calendar-BP label. The same constant conversion applies to every sample. Zero age is not moved to today's date. The file has no recent daily observations, so a sufficiently recent view is empty; wider views may show only the single 2000 CE point.
+  - Runtime use: eccentricity at the published relative ages, `time = 2000 - 1950 - age_kyr * 1000`. The astronomical epoch is 2000 CE, despite the NOAA file's generic calendar-BP label. The same constant conversion applies to every sample. Zero age is not moved to today's date. ZB18a ends at 2000 CE; La2004 supplies the continuation below.
   - Only 58–0 Ma is drawn. The authors explicitly caution that the supplied 100–58 Ma interval is unconstrained due to chaos. Omitting that interval prevents visually precise phase comparisons with temperature there; it does not assert zero dating or phase uncertainty in the retained interval.
+
+- `data/orbit/la2004-recent-eccentricity.csv`
+  - Product: Laskar et al. (2004), *A long-term numerical solution for the insolation quantities of the Earth*, A&A 428, 261–285. Publication: https://doi.org/10.1051/0004-6361:20041335.
+  - Provider: https://ssp.imcce.fr/insola/earth/online/earth/earth.html; data: https://ssp.imcce.fr/insola/earth/online/earth/La2004/INSOLP.LA2004.BTL.ASC; format and epoch: https://ssp.imcce.fr/insola/earth/online/earth/La2004/README.TXT.
+  - Subset checked against the provider on 2026-10-21: the first two eccentricity samples, at 0 and +1 kyr from J2000 (2000 and 3000 CE). Only time and eccentricity are retained; Fortran `D` exponents become `e` without changing numeric precision. These are numerical model samples, not modern measurements.
+  - Subset SHA-256 (LF line endings): `e0616cd99154debef55778a88b2ab2676def53092ed4693100df671bad6955ce`.
+  - Runtime use: keep the original ZB18a samples, including its 2000 endpoint. Add La2004's separate 2000 endpoint and linearly interpolate toward its 3000 sample only as far as the shared present-day boundary. The model change at 2000 remains disconnected and marked, with no fitted shift. The derived endpoint is labelled with its date and “interpolated” in the tooltip. The two-sample subset cannot extend the curve beyond 3000 CE or resolve short-term orbital variations.
 
 ## Temperature
 
@@ -314,9 +321,9 @@ The NOAA `kopp2016-global.txt` reference archive contains local coastal samples 
 - `data/population/population-long-run-with-projections.csv`
   - Coverage: long-run historical to near-future projections
   - Source: https://ourworldindata.org/grapher/population-long-run-with-projections.csv
-  - Runtime use: only `World` / `OWID_WRL`. Prefer the historical `Population` column when supplied; use the projection column otherwise. The bundled historical series ends in 2023; 2024 onward are projections, labelled in tooltips and drawn as dashed lines. Years beyond the current calendar year are excluded.
+  - Runtime use: only `World` / `OWID_WRL`. Prefer the historical `Population` column when supplied; use the projection column otherwise. The bundled historical series ends in 2023; 2024 onward are projections, labelled in tooltips and drawn as dashed lines. The next year's projection supplies a linearly interpolated endpoint at the shared present-day boundary; later dates are not displayed. This endpoint keeps the projection source and dash style and is explicitly labelled as interpolated.
   - Historical values are already a provider composite and remain unchanged. This CSV has no per-row provenance for the historical component estimates; internal source transitions are not inferred or given invented markers. Population estimates and projections have uncertainty that is not supplied in this file.
-  - Lines connect annual samples only within each historical or projection segment. Their visible intersection at the left edge contributes to vertical scaling; no extra daily estimates or extension past the latest sample are added. Population is not part of the automatic observation updater.
+  - Lines connect annual samples only within each historical or projection segment. Their visible intersection at the left edge contributes to vertical scaling. Original sample dates and values are unchanged; the present-day endpoint is a point on the connecting line, not an additional observation or extrapolation beyond the source coverage. Population is not part of the automatic observation updater.
 
 ## Timeline context
 

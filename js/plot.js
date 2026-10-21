@@ -422,6 +422,7 @@ class Data {
     let uncertaintyLine = '';
     if (sample) {
       sampleLine = sampleTimeLabel(sample);
+      if (sample.interpolated) sampleLine += ' • interpolated';
       if (sourceInfo?.period) sampleLine += ' • ' + sourceInfo.period;
       if (sample.site) sampleLine += ' • site ' + sample.site;
       if (sample.station) sampleLine += ' • ' + sample.station;

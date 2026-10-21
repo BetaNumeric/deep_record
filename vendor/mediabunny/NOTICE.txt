@@ -1,0 +1,6 @@
+Mediabunny 1.61.0, unmodified browser distribution.
+Copyright (c) 2026-present, Vanilagy and contributors.
+Licensed under MPL-2.0; see LICENSE.
+Source code: https://github.com/Vanilagy/mediabunny/tree/v1.61.0
+Distribution: https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/dist/bundles/mediabunny.min.mjs
+SHA-256: fa696c53494b6b09a8b310ec51e3c44a59e79513234fb832255a38c686162009

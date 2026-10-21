@@ -60,6 +60,7 @@ const SOURCE_INFO = {
   'volcano-evolv2k': { short: 'eVolv2k', basis: 'ice cores + model', label: 'eVolv2k v3 • annual mean stratospheric optical depth', cadence: 'year' },
   'volcano-cmip6': { short: 'CMIP6', basis: 'mixed records', label: 'CMIP6 v3 • annual mean stratospheric optical depth', cadence: 'year' },
   'orbit-zeebe': { short: 'ZB18a', basis: 'orbital model', label: 'Zeebe 2019 ZB18a • 1,600-year spacing • 2000 epoch' },
+  'orbit-la2004': { short: 'La2004', basis: 'orbital model', label: 'Laskar et al. 2004 • 1,000-year spacing • 2000 epoch', cadence: 'year' },
   'population-history': { short: 'Estimates', basis: 'records + models', label: 'OWID • historical population estimates', cadence: 'year' },
   'population-projection': { short: 'Projections', basis: 'population model', label: 'OWID • population projection, not an observation', cadence: 'year' }
 };

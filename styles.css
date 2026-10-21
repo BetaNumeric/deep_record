@@ -237,6 +237,55 @@ dialog details p:first-of-type { margin-top: 0; }
   }
 }
 
+#zoom-recorder[hidden], #recorder-guard[hidden], #recorder-download[hidden] { display: none; }
+#recorder-guard { position: fixed; inset: 0; z-index: 3; }
+#zoom-recorder {
+  position: fixed;
+  z-index: 4;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  width: min(340px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 16px;
+  border: 1px solid #49647c;
+  border-radius: 10px;
+  background: #071d30;
+  color: #d4dde6;
+  font: 13px/1.5 system-ui, sans-serif;
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: #49647c #0a233a;
+}
+#zoom-recorder header { display: flex; align-items: center; justify-content: space-between; }
+#zoom-recorder h2 { margin: 0; font-size: 16px; font-weight: 600; }
+#zoom-recorder label { display: block; margin-top: 8px; }
+#zoom-recorder input, #zoom-recorder select, #zoom-recorder button:not(.info-close), #recorder-download {
+  box-sizing: border-box;
+  min-height: 36px;
+  border: 1px solid #49647c;
+  border-radius: 5px;
+  background: #102b43;
+  color: #edf3f8;
+  font: inherit;
+  padding: 6px 8px;
+}
+#zoom-recorder input, #zoom-recorder select { width: 100%; min-width: 0; font-size: 16px; }
+#zoom-recorder button, #recorder-download { cursor: pointer; }
+#zoom-recorder :disabled { opacity: 0.5; cursor: default; }
+.recorder-range { display: flex; gap: 8px; }
+.recorder-range input { flex: 1; }
+.recorder-range button { flex-shrink: 0; }
+.recorder-options { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+#zoom-recorder .recorder-loop { display: flex; align-items: center; gap: 8px; }
+#zoom-recorder .recorder-loop input { width: auto; margin: 0; accent-color: #8dd3d5; }
+.recorder-note, #recorder-status { margin: 12px 0; color: #a9bccd; }
+.recorder-note { font-size: 12px; }
+.recorder-actions { display: flex; gap: 8px; }
+#recorder-download { display: block; text-align: center; text-decoration: none; }
+
 @media (pointer: coarse) {
   #timeline-details { font-size: 14px; }
   dialog { font-size: 15px; }

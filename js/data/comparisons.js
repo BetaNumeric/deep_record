@@ -60,9 +60,22 @@ function parseZeebeOrbitalRows(rawLines) {
   return sortRowsByTimeDesc(rows);
 }
 
-function buildEarthOrbitTableFromZeebe(rawLines) {
+function parseRecentOrbitalRows(rawLines) {
+  const lines = (rawLines || []).filter(line => line.trim());
+  if (lines.length !== 3 || lines[0].trim() !== 'year_ce,eccentricity') throw new Error('Invalid La2004 orbital table');
+  return lines.slice(1).map((line, index) => {
+    const cells = parseCsvLine(line);
+    const calendarYear = Number(cells[0]), eccentricity = Number(cells[1]);
+    if (cells.length !== 2 || calendarYear !== 2000 + index * 1000
+      || !Number.isFinite(eccentricity) || eccentricity <= 0 || eccentricity >= 1) throw new Error('Invalid La2004 orbital sample');
+    return { time: calendarYear - 1950, eccentricity, source: 'orbit-la2004', maxGapYears: 1000 };
+  });
+}
+
+function buildEarthOrbitTableFromZeebe(rawLines, recentRawLines) {
   const rows = parseZeebeOrbitalRows(rawLines);
-  return buildTimeValueTable(rows, 'eccentricity', 'Eccentricity');
+  const recent = modelRowsThroughPresent(parseRecentOrbitalRows(recentRawLines), 'eccentricity', currentYear);
+  return buildTimeValueTable(sortRowsByTimeDesc([...recent, ...rows]), 'eccentricity', 'Eccentricity');
 }
 
 function parseWorldPopulationRows(rawLines, maxYearInclusive) {
@@ -108,7 +121,7 @@ function parseWorldPopulationRows(rawLines, maxYearInclusive) {
   return sortRowsByTimeDesc(rows);
 }
 
-function buildPopulationTableFromLongRun(rawLines, maxYearInclusive) {
-  const rows = parseWorldPopulationRows(rawLines, maxYearInclusive);
-  return buildTimeValueTable(rows, 'population', 'Population');
+function buildPopulationTableFromLongRun(rawLines, endYear) {
+  const rows = parseWorldPopulationRows(rawLines, Math.ceil(endYear));
+  return buildTimeValueTable(modelRowsThroughPresent(rows, 'population', endYear), 'population', 'Population');
 }

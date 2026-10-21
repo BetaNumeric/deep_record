@@ -18,6 +18,7 @@ let startupError = null;
 function preload() {
   // Orbital
   sourceTables.zeebeOrbitalRaw = loadSourceLines('data/orbit/zeebe2019orbital.txt');
+  sourceTables.recentOrbitalRaw = loadSourceLines('data/orbit/la2004-recent-eccentricity.csv');
 
   // Temperature (oldest -> newest)
   sourceTables.phanDaTempRaw = loadSourceLines('data/temperature/phanda2024-percentiles.csv');
@@ -93,9 +94,9 @@ function initializeView() {
   measureChartHeader();
   currentYear = decimalYearFromYmd(year(), month(), day() + 1);
   if (!Number.isFinite(currentYear)) currentYear = year();
-  sourceTables.earthOrbit = buildEarthOrbitTableFromZeebe(sourceTables.zeebeOrbitalRaw);
+  sourceTables.earthOrbit = buildEarthOrbitTableFromZeebe(sourceTables.zeebeOrbitalRaw, sourceTables.recentOrbitalRaw);
   sourceTables.volcanic = buildVolcanicSaodTable(sourceTables.volcanicSaodRaw, sourceTables.volcanic);
-  sourceTables.population = buildPopulationTableFromLongRun(sourceTables.populationLongRunRaw, year());
+  sourceTables.population = buildPopulationTableFromLongRun(sourceTables.populationLongRunRaw, currentYear);
   sourceTables.co2 = buildCombinedCo2Table();
 
   sourceTables.temperature = buildCombinedTemperatureTable(
@@ -213,12 +214,14 @@ function draw() {
     textSize(Math.max(12, Math.min(14, height / TEXT_SIZE_DIVISOR_SMALL)));
     let lastLabelLeft = Infinity;
     const universeStartYear = currentYear - 13800000000;
-    const ticks = timelineTicks(Math.max(universeStartYear, yearFromPlotX(shift)), currentYear, Math.abs(oneYear));
+    // Include offscreen ticks so their labels slide through the canvas edge.
+    const labelMargin = 2 * TIMELINE_LABEL_MIN_SPACING;
+    const ticks = timelineTicks(Math.max(universeStartYear, yearFromPlotX(shift - labelMargin)), currentYear, Math.abs(oneYear));
     for (const tick of ticks) {
       const x = plotXFromYear(tick.year);
       const halfLabelWidth = textWidth(tick.label) / 2;
 
-      if (x - halfLabelWidth >= shift + 4 && x + halfLabelWidth <= width - 4
+      if (x + halfLabelWidth > shift && x + halfLabelWidth <= width - 4
         && x + halfLabelWidth + 8 <= lastLabelLeft) {
         noStroke();
         text(tick.label, x, height - height / 24);

@@ -78,6 +78,13 @@ test('installable metadata and offline assets work at root and GitHub Pages subp
       ...[...sketch.matchAll(/(?:loadSourceLines|loadTable)\('([^']+)'/g)].map(match => match[1]),
       ...manifest.icons.map(icon => icon.src)
     ];
+    for (const script of [...html.matchAll(/<script src="([^"]+)"/g)].map(match => match[1]).filter(path => !path.startsWith('https://'))) {
+      const code = fs.readFileSync(script, 'utf8');
+      for (const match of code.matchAll(/import\('([^']+)'\)/g)) {
+        const moduleUrl = new URL(match[1], new URL(script, scope)).href;
+        assert.ok(assets.has(moduleUrl), `Imported module not saved offline: ${moduleUrl}`);
+      }
+    }
     for (const path of dependencies.filter(path => path && !path.startsWith('https://'))) {
       assert.ok(assets.has(new URL(path, scope).href), `Not saved offline: ${path}`);
     }
