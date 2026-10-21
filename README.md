@@ -1,8 +1,8 @@
-# Perspective
+# The Record - perspective across deep time
 
 [Open the app](https://betanumeric.github.io/perspective/)
 
-Perspective is an interactive view of climate history, from recent observations to hundreds of millions of years ago. Compare CO₂, sea level, solar irradiance, orbital eccentricity, volcanic aerosols or population with a combined global temperature curve.
+The Record is an interactive view of climate history, from recent observations to hundreds of millions of years ago. Compare CO₂, sea level, solar irradiance, orbital eccentricity, volcanic aerosols or population with a combined global temperature curve.
 
 Both panels share a **linear time axis**: equal distances represent equal amounts of time at every zoom level. The app is intended for exploring broad patterns and asking questions about the data.
 
