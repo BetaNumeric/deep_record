@@ -1044,6 +1044,30 @@ test('keyboard zoom stays positive and draw returns', () => {
   assert.ok(run('scrollValue') <= 15000000000);
 });
 
+test('the widest zoom and its keyboard preset include cosmic landmarks on narrow screens', () => {
+  const savedWidth=context.width;
+  context.savedResponsiveZoomState=run('({scrollValue,oneYear,key})');
+  try {
+    for (const viewport of [375,812,1280]) {
+      context.width=viewport;
+      run('setZoom(1e50);oneYear=-1000/scrollValue');
+      assert.equal(run('scrollValue'),run('maximumZoom()'));
+      assert.ok(run('(width-shift)*scrollValue/1000')>=13800000000);
+      for (const name of ['Big Bang','Peak starbirth']) {
+        const x=run(`plotXFromYear(event.find(item=>item.name===${JSON.stringify(name)}).startYear)`);
+        assert.ok(x>=15 && x<=viewport,`${name} is reachable at width ${viewport}`);
+      }
+      run("setZoom(1);key='9';keyPressed();oneYear=-1000/scrollValue");
+      assert.equal(run('scrollValue'),run('maximumZoom()'),'preset 9 reaches the full timeline');
+    }
+    assert.equal(run('maximumZoom()'),run('MAX_SCROLL_VALUE'),'desktop zoom limit is preserved');
+  } finally {
+    context.width=savedWidth;
+    run('({scrollValue,oneYear,key}=savedResponsiveZoomState);redrawRequested=true');
+    delete context.savedResponsiveZoomState;
+  }
+});
+
 test('held zoom keys repeat using the current event without duplicating the first step', () => {
   const saved = run('({scrollValue,key,keyCode,showCursor})');
   try {
@@ -1841,7 +1865,7 @@ test('timeline context keeps short labels, sourced descriptions and accurate cal
       universeAligned: find('Big Bang').startYear === currentYear - 13800000000
     };
   })()`);
-  assert.equal(details.count, 46);
+  assert.equal(details.count, 59);
   assert.equal(details.complete && details.short && details.universeAligned, true);
   assert.equal(details.moon, '20 Jul 1969');
   assert.equal(details.berlin, '9 Nov 1989');

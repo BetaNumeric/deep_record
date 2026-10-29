@@ -23,16 +23,17 @@ function recorderStatus(message) { recorderField('status').textContent = message
 
 function recorderOptions() {
   const scale = (width - shift) / 1000;
+  const maxZoom = maximumZoom();
   let start = Number(recorderField('start').value) / scale;
   let end = Number(recorderField('end').value) / scale;
   const duration = Number(recorderField('duration').value);
   const fps = Number(recorderField('fps').value);
   if (![start, end, duration, fps].every(Number.isFinite)
-    || start < 1 - 1e-10 || end < 1 - 1e-10 || start > MAX_SCROLL_VALUE * (1 + 1e-10) || end > MAX_SCROLL_VALUE * (1 + 1e-10)) {
-    throw new Error('Choose spans between ' + scale.toPrecision(4) + ' and ' + (scale * MAX_SCROLL_VALUE).toPrecision(4) + ' years.');
+    || start < 1 - 1e-10 || end < 1 - 1e-10 || start > maxZoom * (1 + 1e-10) || end > maxZoom * (1 + 1e-10)) {
+    throw new Error('Choose spans between ' + scale.toPrecision(4) + ' and ' + (scale * maxZoom).toPrecision(4) + ' years.');
   }
-  start = Math.max(1, Math.min(MAX_SCROLL_VALUE, start));
-  end = Math.max(1, Math.min(MAX_SCROLL_VALUE, end));
+  start = Math.max(1, Math.min(maxZoom, start));
+  end = Math.max(1, Math.min(maxZoom, end));
   if (duration < 1 || duration > 120 || ![15, 30, 60].includes(fps)) throw new Error('Choose 1–120 seconds and 15, 30 or 60 fps.');
   return { start, end, duration, fps, loop: recorderField('loop').checked,
     easing: recorderField('easing').value, format: recorderField('format').value };

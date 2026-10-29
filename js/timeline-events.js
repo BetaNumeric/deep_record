@@ -19,9 +19,6 @@ function createTimelineEvents() {
   band('Single-celled life on Earth', bp(3800000000), currentYear,
     'Early evidence of microbial life. The oldest claimed traces and their interpretation remain debated.',
     'Earliest_known_life_forms', { ongoing: true });
-  band('Multicellular life on Earth', bp(3250000000), currentYear,
-    'Early multicellular organization in microbial communities. Complex plants and animals evolved much later; evidence and definitions vary.',
-    'Multicellular_organism', { ongoing: true });
   band('Dinosaurs', bp(230000000), bp(66000000),
     'The band follows non-avian dinosaurs, from their early fossils to the end-Cretaceous extinction. Birds are surviving dinosaurs.',
     'Dinosaur');
@@ -67,18 +64,60 @@ function createTimelineEvents() {
   point('Big Bang', currentYear - 13800000000,
     'The early hot, dense phase from which the universe expanded. This marker does not establish whether time itself had a beginning.',
     'Big_Bang', { approximate: true });
+  point('Peak starbirth', bp(10000000000),
+    'Stars were forming across the universe at their fastest overall rate around 10 billion years ago. This rounded marker represents a broad peak, often called cosmic noon; star formation was already underway and continues today.',
+    'Star_formation', { approximate: true });
   point('Formation of the Moon', bp(4500000000),
     'The Moon likely formed after a giant collision involving the young Earth. Its age and the details of its formation are still studied.',
     'Origin_of_the_Moon', { approximate: true });
+  point('Early life', bp(3500000000),
+    'Microbial communities left layered structures called stromatolites around 3.5 billion years ago. This marker dates preserved fossil evidence; the origin of life may be older, as the single-celled-life band indicates.',
+    'Stromatolite', { approximate: true });
+  point('Oxygen Catastrophe', bp(2400000000),
+    'Oxygen released by photosynthetic microbes began accumulating in the atmosphere, transforming conditions for life. Also called the Great Oxidation Event, this unfolded over a long period; the marker gives a rounded date for its onset.',
+    'Great_Oxidation_Event', { approximate: true });
+  point('Early seaweed', bp(1000000000),
+    'Fossils of the small green alga Proterocladus antiquus in China date to around 1 billion years ago. They provide evidence of early multicellular seaweed; the marker dates these fossils rather than the origin of all algae.',
+    'Proterocladus', { approximate: true });
+  point('Snowball Earth', bp(720000000),
+    'Earth experienced extreme glaciations during the Cryogenian, with ice reaching tropical latitudes. This marker gives a rounded date near the start of a series of episodes, not one continuous freeze.',
+    'Snowball_Earth', { approximate: true });
+  point('Early Forests', bp(390000000),
+    'Fossil forests in southwest England date to around 390 million years ago. Early trees differed from modern forests; this marker dates surviving evidence, not the exact origin of forests.',
+    'Evolutionary_history_of_plants', { approximate: true });
   point('Pangaea breaks apart', bp(175000000),
     'The supercontinent separated gradually as tectonic plates moved. This marker represents part of a long breakup, not a single event.',
     'Pangaea', { approximate: true });
+  point('Asteroid impact', bp(66000000),
+    'A large asteroid struck near today\'s Yucatan Peninsula, forming the Chicxulub crater. The impact is linked to the mass extinction that ended the age of non-avian dinosaurs.',
+    'Chicxulub_crater', { approximate: true });
+  point('Antarctic ice', bp(34000000),
+    'Large, lasting ice sheets began developing in East Antarctica as global climate cooled. Ice did not cover the entire continent at once; glaciation spread toward West Antarctica later.',
+    'Antarctic_ice_sheet', { approximate: true });
+  point('Early apes', bp(25000000),
+    'Rukwapithecus fossils from Tanzania are about 25 million years old and are interpreted as an early member of the ape lineage. This marker dates fossil evidence rather than an exact origin date for apes.',
+    'Rukwapithecus', { approximate: true });
+  point('Human–chimp split', bp(7000000),
+    'The ancestors of humans and chimpanzees diverged from a shared population roughly 6–8 million years ago. This rounded marker represents a gradual population split. Both lineages continued evolving afterward.',
+    'Chimpanzee–human_last_common_ancestor', { approximate: true });
   point('Stone Tools', bp(3300000),
     'Stone tools found at Lomekwi in Kenya are about 3.3 million years old. This dates surviving evidence, not the first use of any tool.',
     'Lomekwi', { approximate: true });
   point('Fire', bp(1000000),
     'Evidence suggests early humans used fire around this time. Controlled and habitual fire use developed gradually, and the earliest evidence is debated.',
     'Control_of_fire_by_early_humans', { approximate: true });
+  point('Neanderthals', bp(400000),
+    'Neanderthals appear in the fossil record roughly 400,000 years ago. Their populations lived across parts of Europe and Asia until around 40,000 years ago, overlapping in time with Homo sapiens and interbreeding with some of our ancestors.',
+    'Neanderthal', { approximate: true });
+  point('Jewellery', bp(142000),
+    'Shell beads from Bizmoune Cave in Morocco were used as personal ornaments. Many come from deposits at least 142,000 years old. This marker dates surviving archaeological evidence rather than the exact invention of jewellery.',
+    'Jewellery#History', { approximate: true });
+  point('Cave paintings', bp(36500),
+    'Chauvet Cave in France preserves paintings from an early period of human use around 36,500 years ago. This is a well-dated example of prehistoric cave art, not a date for the invention of painting.',
+    'Chauvet_Cave', { approximate: true });
+  point('Dogs', bp(14200),
+    'Dog remains buried with two people at Bonn-Oberkassel, Germany, date to around 14,200 years ago. They document an established human-dog relationship, not the beginning of domestication, whose timing remains uncertain.',
+    'Domestication_of_the_dog', { approximate: true });
   point('Wheel', -3499,
     'Wheeled transport appears in archaeological evidence around this time. Pottery wheels and other uses have their own histories.',
     'Wheel', { approximate: true });
@@ -88,6 +127,9 @@ function createTimelineEvents() {
   point('Iron Tools', -1199,
     'Iron tools became more widespread around the start of the Iron Age in parts of the Near East. Ironworking began earlier and spread at different times.',
     'Iron_Age', { approximate: true });
+  point('Fall of Rome', 476,
+    'In 476 CE, Odoacer deposed Romulus Augustulus, conventionally regarded as the last Western Roman emperor. This marker represents the end of the Western Roman Empire, not the end of the city or of Roman civilization; the Eastern Roman Empire continued.',
+    'Fall_of_the_Western_Roman_Empire', { title: 'Fall of the Western Roman Empire' });
   point('Printing Press', 1450,
     'Gutenberg developed movable-metal-type printing in Europe around this time. Printing and movable type already had earlier histories in Asia.',
     'Printing_press', { approximate: true });
@@ -107,13 +149,11 @@ function createTimelineEvents() {
   point('Airplane', date(1903, 12, 17),
     'The Wright brothers made sustained, controlled powered flights at Kitty Hawk. Earlier gliders and flight experiments came before them.',
     'Wright_brothers', { exactDate: true });
-  point('Television', 1927,
-    'Philo Farnsworth demonstrated an electronic television system. Mechanical television and other experiments had already been developed.', 'History_of_television');
+  point('TV', 1927,
+    'Philo Farnsworth demonstrated an electronic television system. Mechanical television and other experiments had already been developed.',
+    'History_of_television', { title: 'Television' });
   point('Computer', 1938,
     'Konrad Zuse completed the Z1, an early programmable mechanical computer. Computing has many earlier and later milestones.', 'Z1_(computer)');
-  point('Transistor', date(1947, 12, 16),
-    'Researchers at Bell Labs obtained amplification with a point-contact transistor. A demonstration to colleagues followed on 23 December.',
-    'History_of_the_transistor', { exactDate: true });
   point('Moon Landing', date(1969, 7, 20),
     'Apollo 11 made the first crewed landing on the Moon. Armstrong and Aldrin explored the surface while Collins remained in lunar orbit.',
     'Apollo_11', { exactDate: true });
@@ -123,9 +163,9 @@ function createTimelineEvents() {
   point('9/11', date(2001, 9, 11),
     'Coordinated terrorist attacks in the United States. The date is a familiar landmark in recent world history.',
     'September_11_attacks', { title: 'September 11 attacks', exactDate: true });
-  point('Fukushima', date(2011, 3, 11),
-    'An earthquake and tsunami triggered the Fukushima nuclear accident in Japan. This marker dates the disaster\'s onset.',
-    'Fukushima_nuclear_accident', { exactDate: true });
+  point('Financial crisis', date(2008, 9, 15),
+    'Lehman Brothers filed for bankruptcy on 15 September 2008, a major escalation of the global financial crisis. This point dates that bankruptcy; the broader crisis developed over 2007–2009.',
+    'Bankruptcy_of_Lehman_Brothers', { title: 'Financial crisis: Lehman Brothers bankruptcy', exactDate: true });
   point('Paris Agreement', date(2015, 12, 12),
     'Countries adopted the Paris climate agreement. It entered into force in 2016; adoption alone does not mark an immediate change in emissions.',
     'Paris_Agreement', { title: 'Paris Agreement adopted', exactDate: true });

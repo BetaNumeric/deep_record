@@ -25,6 +25,7 @@ function harness() {
     document:{body:{append(){}},getElementById:id=>fields.get(id),querySelector:()=>source,createElement:()=>output},
     chartHeaderHeight:()=>50,panelTargetY:position=>position===0 ? 300 : 50,
     looping:true,isLooping:()=>context.looping,noLoop:()=>{context.looping=false;},loop:()=>{context.looping=true;},
+    maximumZoom:()=>context.MAX_SCROLL_VALUE*Math.max(1,1000/Math.max(1,context.width-context.shift)),
     setZoom:value=>{context.scrollValue=value;},redraw(){},mouseReleased(){},resetChartTouch(){},closeTimelineDetails(){},
     requestAnimationFrame:callback=>{frames.set(++nextFrame,callback);return nextFrame;},
     cancelAnimationFrame:id=>frames.delete(id),
@@ -90,6 +91,18 @@ test('recording validates spans and duration and preserves legitimate zoom limit
   app.fields.get('recorder-duration').value='2';
   app.fields.get('recorder-fps').value='1000';
   assert.throws(()=>app.context.recorderOptions(),/fps/);
+});
+
+test('recording accepts cosmic spans on a phone and rejects spans beyond the viewport zoom limit', () => {
+  const app=harness();app.context.width=375;
+  app.fields.get('recorder-start').value='13800000000';
+  const options=app.context.recorderOptions();
+  assert.ok(options.start>app.context.MAX_SCROLL_VALUE);
+  assert.equal(options.start*(375-15)/1000,13800000000);
+  app.fields.get('recorder-start').value='15000000000';
+  assert.equal(app.context.recorderOptions().start,app.context.maximumZoom());
+  app.fields.get('recorder-start').value='15100000000';
+  assert.throws(()=>app.context.recorderOptions(),/Choose spans/);
 });
 
 test('PNG archive has standard ZIP headers, known CRCs, numbered filenames and offsets', async () => {

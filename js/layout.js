@@ -38,5 +38,6 @@ function resizeChartViewport() {
     resizeCanvas(nextWidth, nextHeight);
   }
   measureChartHeader();
+  setZoom(scrollValue);
   redrawRequested = true;
 }

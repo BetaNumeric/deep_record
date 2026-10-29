@@ -85,10 +85,14 @@ function dataGuideIsOpen() {
   return typeof document !== 'undefined' && document.getElementById('about-data')?.open;
 }
 
+function maximumZoom() {
+  return MAX_SCROLL_VALUE * Math.max(1, 1000 / Math.max(1, width - shift));
+}
+
 function setZoom(value) {
   if (!Number.isFinite(value)) return;
   if (timelineDetailsEvent && !timelineDetailsPinned) closeTimelineDetails();
-  scrollValue = constrain(value, 1, MAX_SCROLL_VALUE);
+  scrollValue = constrain(value, 1, maximumZoom());
   redrawRequested = true;
 }
 
@@ -110,7 +114,7 @@ function keyPressed(input) {
     input?.preventDefault();
     return false;
   }
-  const presets = [10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 14000000000];
+  const presets = [10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, maximumZoom()];
   if (/^[0-9]$/.test(key)) setZoom(presets[Number(key)]);
   if (key === 'C' || key === 'c' || key === ' ') { showCursor = !showCursor; redrawRequested = true; }
 }
