@@ -5,31 +5,31 @@
       "url": "https://data.giss.nasa.gov/gistemp/tabledata_v4/GLB.Ts+dSST.txt",
       "path": "data/temperature/GLB.Ts+dSST.txt",
       "units": "0.01 degrees Celsius relative to 1951-1980",
-      "retrieved_at": "2026-10-16T12:33:20+00:00",
+      "retrieved_at": "2026-11-16T17:11:00+00:00",
       "first_observation": "1880-01-01",
-      "latest_observation": "2026-09-01",
-      "observation_count": 1761,
-      "sha256": "d6d589fa19999001cffa41362e9efc85d8798ae36b9e6dce282d02d607e88454"
+      "latest_observation": "2026-10-01",
+      "observation_count": 1762,
+      "sha256": "a6708fd0bbcd83e054ed6079be684e231425e146cefcd7ab037cfdc00c71f5cc"
     },
     "noaa-co2": {
       "url": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_daily_mlo.txt",
       "path": "data/co2/co2_daily_mlo.txt",
       "units": "ppm",
-      "retrieved_at": "2026-11-01T14:22:40+00:00",
+      "retrieved_at": "2026-11-16T17:11:01+00:00",
       "first_observation": "1974-05-19",
-      "latest_observation": "2026-10-31",
-      "observation_count": 16018,
-      "sha256": "0a62cbf334f1bbc3ae94a44f5dd900efa0effea7f3784d9664ac5c69e0236424"
+      "latest_observation": "2026-11-15",
+      "observation_count": 16033,
+      "sha256": "0d09b972b68b5ac912fa9f2b8d9e57b7aff56acfd9bc04cea43caf5615f4372a"
     },
     "tsis": {
       "url": "https://lasp.colorado.edu/lisird/latis/dap/tsis_tsi_24hr.txt",
       "path": "data/solar/tsis_tsi_24hr.txt",
       "units": "W/m2 at 1 AU",
-      "retrieved_at": "2026-11-01T14:22:42+00:00",
+      "retrieved_at": "2026-11-16T17:11:03+00:00",
       "first_observation": "2018-01-11",
-      "latest_observation": "2026-10-27",
-      "observation_count": 2752,
-      "sha256": "e696ce673b46b886422151088c9dc52da171540a6c370dc95400d0a8e0bb16d0"
+      "latest_observation": "2026-11-11",
+      "observation_count": 2763,
+      "sha256": "7f0283d4342c9a7658037358d2b5eec83acc1a3a140c810741c33f69115f822e"
     },
     "colorado": {
       "url": "https://sealevel.colorado.edu/files/2026_rel2/gmsl_2026rel2_seasons_retained.txt",
